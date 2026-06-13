@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vault</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+  <!-- LOCK SCREEN -->
+  <div id="lock-screen" class="screen active">
+    <div class="lock-header">
+      <div class="logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="5" y="13" width="18" height="13" rx="3" fill="#111"/>
+          <path d="M9 13V9a5 5 0 0 1 10 0v4" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <span class="logo-text">Vault</span>
+    </div>
+    <p class="lock-sub">Enter your master password</p>
+    <div class="input-wrap">
+      <input type="password" id="master-input" placeholder="Master password" autocomplete="off" />
+      <button class="eye-btn" id="toggle-master" tabindex="-1">
+        <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+    <div id="lock-error" class="error-msg"></div>
+    <button class="btn-primary" id="unlock-btn">Unlock</button>
+    <button class="btn-ghost" id="setup-link">First time? Set master password</button>
+  </div>
+
+  <!-- SETUP SCREEN -->
+  <div id="setup-screen" class="screen">
+    <div class="screen-nav">
+      <button class="back-btn" id="back-to-lock">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+    </div>
+    <h2 class="screen-title">Set master password</h2>
+    <p class="screen-sub">This password encrypts all your stored credentials. Don't lose it.</p>
+    <div class="input-wrap">
+      <input type="password" id="setup-pw" placeholder="New master password" autocomplete="new-password" />
+    </div>
+    <div class="input-wrap">
+      <input type="password" id="setup-confirm" placeholder="Confirm password" autocomplete="new-password" />
+    </div>
+    <div id="setup-error" class="error-msg"></div>
+    <button class="btn-primary" id="save-master-btn">Save password</button>
+  </div>
+
+  <!-- MAIN SCREEN -->
+  <div id="main-screen" class="screen">
+    <div class="main-header">
+      <div class="header-left">
+        <div class="logo-mark small">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+            <rect x="5" y="13" width="18" height="13" rx="3" fill="#111"/>
+            <path d="M9 13V9a5 5 0 0 1 10 0v4" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <span class="logo-text small">Vault</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="add-btn" title="Add password">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="icon-btn" id="lock-btn" title="Lock vault">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search-input" placeholder="Search…" autocomplete="off" />
+    </div>
+
+    <!-- Current-tab match banner -->
+    <div id="tab-match-banner" class="tab-match-banner" style="display:none;"></div>
+
+    <div id="entries-list" class="entries-list">
+      <div class="empty-state" id="empty-state">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <p>No passwords yet</p>
+        <span>Click + to add one</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT SCREEN -->
+  <div id="form-screen" class="screen">
+    <div class="screen-nav">
+      <button class="back-btn" id="back-to-main">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <span id="form-title-label">New entry</span>
+    </div>
+
+    <div class="form-body">
+      <label class="field-label">Site or app</label>
+      <input type="text" id="field-site" placeholder="e.g. github.com" autocomplete="off" />
+
+      <label class="field-label">Username or email</label>
+      <input type="text" id="field-user" placeholder="you@example.com" autocomplete="off" />
+
+      <label class="field-label">Password</label>
+      <div class="input-wrap">
+        <input type="password" id="field-pass" placeholder="Password" autocomplete="new-password" />
+        <button class="eye-btn" id="toggle-field-pass" tabindex="-1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+
+      <button class="generate-btn" id="generate-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Generate strong password
+      </button>
+
+      <label class="field-label" style="margin-top: 4px;">Notes <span class="optional">optional</span></label>
+      <textarea id="field-notes" placeholder="Any extra info…" rows="3"></textarea>
+
+      <div id="form-error" class="error-msg"></div>
+
+      <div class="form-actions">
+        <button class="btn-primary" id="save-entry-btn">Save</button>
+        <button class="btn-danger" id="delete-entry-btn" style="display:none;">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
